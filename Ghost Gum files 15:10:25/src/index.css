@@ -1,0 +1,288 @@
+@import './styles/fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Ghost Gum Theme Variables
+   ========================= */
+:root {
+  --gg-bg: #F7F4EF;
+  --gg-bg-alt: #F1ECE5;
+  --gg-accent: #C6864F;
+  --gg-text: #23211F;
+  --gg-text-muted: #5B4E46;
+  --gg-divider: #E2DAD3;
+
+  /* Editorial rhythm */
+  --gg-copy-max: 68ch;
+  --gg-prose-max: 58ch;
+  --gg-radius: 20px;
+  --gg-radius-lg: 28px;
+  --gg-hairline: 0.5px;
+
+  /* Noise / paper */
+  --gg-noise-opacity: 0.03;
+  --gg-noise-opacity-sand: 0.04;
+
+  /* Scrims */
+  --gg-scrim-light: color-mix(in oklab, var(--gg-bg) 92%, transparent);
+  --gg-scrim-light-strong: color-mix(in oklab, var(--gg-bg) 86%, transparent);
+}
+
+/* Dark stage (Pro) */
+:root[data-theme="pro"] {
+  --gg-bg: #0C0D0E;
+  --gg-bg-alt: #111213;
+  --gg-text: rgba(247,244,239,0.96);
+  --gg-text-muted: rgba(207,200,190,0.92);
+  --gg-divider: rgba(255,255,255,0.18);
+
+  --gg-noise-opacity: 0.02;
+  --gg-noise-opacity-sand: 0.03;
+
+  --gg-scrim-light: color-mix(in oklab, #0C0D0E 55%, transparent);
+  --gg-scrim-light-strong: color-mix(in oklab, #0C0D0E 70%, transparent);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply font-sans;
+    color: var(--gg-text);
+    background: var(--gg-bg);
+  }
+
+  /* Global Typography */
+  h1, h2, h3, h4, .heading { @apply font-serif; } /* Belgiano */
+
+  /* Editorial scales — slightly tighter tracking */
+  .h1 { font: 400 56px/1.14 'Belgiano', Georgia, serif; letter-spacing: -0.008em; }
+  .h2 { font: 400 40px/1.15 'Belgiano', Georgia, serif; letter-spacing: -0.008em; }
+  .h3 { font: 400 28px/1.20 'Belgiano', Georgia, serif; letter-spacing: -0.010em; }
+  .h4 { font: 400 22px/1.20 'Belgiano', Georgia, serif; letter-spacing: -0.006em; }
+  .lead { font: 500 20px/1.6 'Manrope', ui-sans-serif, system-ui, sans-serif; }
+  .caption { font: 400 14px/1.5 'Manrope', ui-sans-serif, system-ui, sans-serif; opacity: 0.75; }
+  .smallcaps, .small-caps { font-variant-caps: all-small-caps; letter-spacing: 0.06em; text-transform: lowercase; }
+}
+
+/* =================
+   Paper Surfaces
+   ================= */
+@layer utilities {
+  .paper-base {
+    background-color: var(--gg-bg);
+    position: relative;
+  }
+  .paper-base::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: var(--gg-noise-opacity);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  .paper-sand {
+    background-color: #E8E1D7;
+    border-top: var(--gg-hairline) solid rgba(0, 0, 0, 0.08);
+    position: relative;
+  }
+  .paper-sand::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: var(--gg-noise-opacity-sand);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  .accent-rule { border-color: #8F7B66; }
+}
+
+/* =========================
+   Editorial Primitives
+   ========================= */
+
+/* Panel grammar (used to frame immersive content without fighting it) */
+.panel {
+  border-radius: var(--gg-radius-lg);
+  background: var(--gg-bg-alt);
+  border: var(--gg-hairline) solid var(--gg-divider);
+  box-shadow:
+    0 0.5px 0 color-mix(in oklab, var(--gg-text) 6%, transparent) inset,
+    0 24px 48px rgba(0,0,0,0.06);
+}
+.panel--dark {
+  border-radius: var(--gg-radius-lg);
+  background: color-mix(in oklab, #ffffff 2%, transparent);
+  border: var(--gg-hairline) solid var(--gg-divider);
+  box-shadow:
+    0 0.5px 0 color-mix(in oklab, #ffffff 28%, transparent) inset,
+    0 24px 48px rgba(0,0,0,0.18);
+}
+
+/* Caption scrim (protects copy over high-frequency textures) */
+.caption-scrim {
+  backdrop-filter: blur(6px);
+  background: color-mix(in oklab, var(--gg-bg) 90%, transparent);
+}
+.caption-scrim--strong {
+  backdrop-filter: blur(8px);
+  background: color-mix(in oklab, var(--gg-bg) 80%, transparent);
+}
+
+/* Sticky thesis column spacing */
+.sticky-thesis {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  max-width: var(--gg-copy-max);
+}
+
+/* Quiet hairline */
+.hairline { border-top: var(--gg-hairline) solid var(--gg-divider); }
+.rounded-xxl { border-radius: var(--gg-radius-lg); }
+
+/* =================
+   Micro-interactions
+   ================= */
+@keyframes press-down { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(1px); opacity: 0.92; } }
+.press-effect:active { animation: press-down 120ms ease-out; }
+
+.micro-zoom { transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+.micro-zoom:hover { transform: scale(1.02); }
+.elevate-shadow:hover { box-shadow: 0 2px 10px rgba(25, 20, 15, 0.05); }
+
+/* ===============
+   Scrollbar (subtle)
+   =============== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--gg-bg); }
+::-webkit-scrollbar-thumb { background: #8F7B66; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #7A6B58; }
+
+/* Inputs */
+input::placeholder { color: var(--placeholder-color, rgba(35, 33, 31, 0.38)) !important; }
+:root[data-theme="pro"] input::placeholder { color: rgba(247,244,239,0.42) !important; }
+
+/* Focus states — visible but not garish */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid #0A84FF;
+  outline-offset: 2px;
+}
+
+/* =========================
+   Motion discipline
+   ========================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================
+   Background image handling
+   ========================= */
+/* Keep these simple and non-contradictory; avoid forcing contain+cover */
+section[style*="background-image"] {
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* =========================
+   Global transition hygiene
+   ========================= */
+/* Limit the universal transition list to avoid layout thrash */
+* {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+.btn-ghost {
+  border: 1px solid var(--gg-text);
+  background: transparent;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 500;
+}
+.btn-ghost:hover { background-color: var(--gg-text); color: var(--gg-bg); }
+
+.btn-primary {
+  background-color: var(--gg-text);
+  color: var(--gg-bg);
+  border: 1px solid var(--gg-text);
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 500;
+}
+.btn-primary:hover { background-color: #2B2B2B; border-color: #2B2B2B; }
+
+/* =========================
+   Cards / Badges
+   ========================= */
+.card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(25, 20, 15, 0.05);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.card:hover { box-shadow: 0 8px 24px rgba(25, 20, 15, 0.06); transform: translateY(-2px); }
+
+.badge {
+  border: 1px solid #8F7B66;
+  background: rgba(143, 123, 102, 0.10);
+  color: #8F7B66;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* =========================
+   Ingredients-specific helpers
+   ========================= */
+/* bottom gradient that protects captions on immersive images */
+.caption-gradient {
+  position: absolute;
+  inset-inline: 0; bottom: 0;
+  height: 28%;
+  background: linear-gradient(to top, var(--gg-scrim-light-strong), transparent);
+  pointer-events: none;
+}
+
+/* a soft inner scrim for overlaid text blocks */
+.inner-scrim {
+  background: color-mix(in oklab, var(--gg-bg) 88%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Ensures editorial max widths in text blocks */
+.prose-tight p { max-width: var(--gg-prose-max); }
+.prose-tight { max-width: var(--gg-copy-max); }
+
+/* Utility to flip the site into Pro dark stage when needed */
+.gg-pro { /* add this class at a high wrapper or set data-theme="pro" on <html> */
+  color-scheme: dark;
+}
